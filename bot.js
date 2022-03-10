@@ -8,7 +8,7 @@ const axios = require('axios');
 const Heroku = require('heroku-client');
 const {WAConnection, MessageOptions, MessageType, Mimetype, Presence} = require('@adiwajshing/baileys');
 const {Message, StringSession, Image, Video} = require('./leon/');
-const { date, time } = require('./helpers/');
+const { date, time, version } = require('./helpers/');
 const { DataTypes } = require('sequelize');
 const { GreetingsDB, getMessage } = require("./plugins/sql/greetings");
 const got = require('got');
@@ -60,7 +60,7 @@ Array.prototype.remove = function() {
     return this;
 };
 
-async function start() {
+async function start(version) {
     await config.DATABASE.sync();
     var StrSes_Db = await LeonDB.findAll({
         where: {
@@ -70,7 +70,7 @@ async function start() {
     
     const Leon = new WAConnection();
     const Session = new StringSession();
-    Leon.version = [3, 3430, 9]
+    Leon.version = version;
     Leon.setMaxListeners(0);
 
     Leon.logger.level = config.DEBUG ? 'debug' : 'warn';
@@ -178,10 +178,10 @@ ${chalk.green.bold("🔄 Connecting...")}`);
                   try { pp = await Leon.getProfilePicture(msg.messageStubParameters[0]); } catch { pp = await Leon.getProfilePicture(); }
                    var json = await Leon.groupMetadata(msg.key.remoteJid)
                    await axios.get(pp, {responseType: 'arraybuffer'}).then(async (res) => {
-                   await Leon.sendMessage(msg.key.remoteJid, res.data, MessageType.image, { mimetype: Mimetype.png, caption:  gb.message.replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name) }); });   
+                   await Leon.sendMessage(msg.key.remoteJid, res.data, MessageType.image, { mimetype: Mimetype.png, caption:  gb.message.replace('@user', '@' + msg.messageStubParameters[0].split('@')[0]).replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name) }); });   
                 } else {
                    var json = await Leon.groupMetadata(msg.key.remoteJid)
-                   await Leon.sendMessage(msg.key.remoteJid, gb.message.replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name), MessageType.text);   
+                   await Leon.sendMessage(msg.key.remoteJid, gb.message.replace('@user', '@' + msg.messageStubParameters[0].split('@')[0]).replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name), MessageType.text);   
             }
           }  
             return;
@@ -194,10 +194,10 @@ ${chalk.green.bold("🔄 Connecting...")}`);
                   try { pp = await Leon.getProfilePicture(msg.messageStubParameters[0]); } catch { pp = await Leon.getProfilePicture(); }
                    var json = await Leon.groupMetadata(msg.key.remoteJid)
                    await axios.get(pp, {responseType: 'arraybuffer'}).then(async (res) => {
-                   await Leon.sendMessage(msg.key.remoteJid, res.data, MessageType.image, { mimetype: Mimetype.png, caption:  gb.message.replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name) }); });   
+                   await Leon.sendMessage(msg.key.remoteJid, res.data, MessageType.image, { mimetype: Mimetype.png, caption:  gb.message.replace('@user', '@' + msg.messageStubParameters[0].split('@')[0]).replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name) }); });   
                 } else {
                    var json = await Leon.groupMetadata(msg.key.remoteJid)
-                   await Leon.sendMessage(msg.key.remoteJid, gb.message.replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name), MessageType.text);   
+                   await Leon.sendMessage(msg.key.remoteJid, gb.message.replace('@user', '@' + msg.messageStubParameters[0].split('@')[0]).replace('{pp}', '').replace('{gcname}', json.subject).replace('{gcowner}', json.owner).replace('{gcdesc}', json.desc).replace('{owner}', Leon.user.name), MessageType.text);   
             }
           }         
             return;                               
@@ -301,4 +301,5 @@ ${chalk.green.bold("🔄 Connecting...")}`);
     }
 }
 
-start();
+
+start(version());
