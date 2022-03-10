@@ -9,6 +9,7 @@ const Heroku = require('heroku-client');
 const {WAConnection, MessageOptions, MessageType, Mimetype, Presence} = require('@adiwajshing/baileys');
 const {Message, StringSession, Image, Video} = require('./leon/');
 const { date, time, version } = require('./helpers/');
+const v = decodeURI(version());
 const { DataTypes } = require('sequelize');
 const { GreetingsDB, getMessage } = require("./plugins/sql/greetings");
 const got = require('got');
@@ -60,7 +61,9 @@ Array.prototype.remove = function() {
     return this;
 };
 
-async function start(version) {
+startLeon(v);
+
+async function startLeon(version) {
     await config.DATABASE.sync();
     var StrSes_Db = await LeonDB.findAll({
         where: {
@@ -300,6 +303,3 @@ ${chalk.green.bold("🔄 Connecting...")}`);
         }
     }
 }
-
-
-start(version());
