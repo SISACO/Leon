@@ -1,5 +1,4 @@
 module.exports = {
     date: require('./autobio'),
-    time: require('./autobio'),
-    version: require('./version')
+    time: require('./autobio')
 };
