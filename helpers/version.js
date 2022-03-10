@@ -9,3 +9,5 @@ async function version() {
         return '%5B3,%203430,%209%5D'
     }
 }
+
+module.exports = { version }
