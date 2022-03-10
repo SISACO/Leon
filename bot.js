@@ -8,8 +8,7 @@ const axios = require('axios');
 const Heroku = require('heroku-client');
 const {WAConnection, MessageOptions, MessageType, Mimetype, Presence} = require('@adiwajshing/baileys');
 const {Message, StringSession, Image, Video} = require('./leon/');
-const { date, time, version } = require('./helpers/');
-const v = decodeURI(version());
+const { date, time } = require('./helpers/');
 const { DataTypes } = require('sequelize');
 const { GreetingsDB, getMessage } = require("./plugins/sql/greetings");
 const got = require('got');
@@ -61,9 +60,9 @@ Array.prototype.remove = function() {
     return this;
 };
 
-startLeon(v);
+startLeon();
 
-async function startLeon(version) {
+async function startLeon() {
     await config.DATABASE.sync();
     var StrSes_Db = await LeonDB.findAll({
         where: {
@@ -73,7 +72,7 @@ async function startLeon(version) {
     
     const Leon = new WAConnection();
     const Session = new StringSession();
-    Leon.version = version;
+    Leon.version = [3, 3430, 9];
     Leon.setMaxListeners(0);
 
     Leon.logger.level = config.DEBUG ? 'debug' : 'warn';
